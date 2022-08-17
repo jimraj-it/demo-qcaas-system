@@ -23,7 +23,6 @@ Sample screenshot
 - Input your commands in the text box or use the auto filled values, press submit
 - System will validate the input process submitted commands
 - Incase of invalid command Error Code 111 will be returned from QC system.
-![image](https://user-images.githubusercontent.com/109734217/185227981-c90643ae-3322-48c2-be2a-0fdb7a9619f4.png)
 - Results from runtime will be returned as sucess or error codes
 ![image](https://user-images.githubusercontent.com/109734217/185228047-feecca98-8098-488f-9933-4607a85d04be.png)
 
