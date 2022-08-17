@@ -30,3 +30,8 @@ Sample screenshot:
 - In visual studio output window select WebUI from the list of ouputs, UI and runtime logs will be displayed here
 ![image](https://user-images.githubusercontent.com/109734217/185227867-0b7101c4-99e4-409a-b8c8-cd3290aadaa0.png)
 
+**Run Tests**
+- To run tests, go to test explorer tab and click first menu button "Run all"
+- Individual tests results or errors can be viewed in summary tab in left side
+![image](https://user-images.githubusercontent.com/109734217/185259233-0e2b3610-5120-4ffe-9d1f-1bd8a2307a1c.png)
+
