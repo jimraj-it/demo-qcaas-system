@@ -1,8 +1,8 @@
 # QC System Demo application:
 
-A system to allow client to submit a string commands for a single qubit, system will submit the valid commands in Quantum runtime and return results. Implemented using .Net 6.0 for rapid developement, saved as solution file to be compile/run in visual studio.
+A system to allow client to submit a string commands for a single qubit, system will submit the valid commands in Quantum runtime and return results. Implemented using .Net 6.0 for rapid developement, saved as solution file to allow compile/run in visual studio.
 
-Sample screenshot
+Sample screenshot:
 ![image](https://user-images.githubusercontent.com/109734217/185224490-fd2702b7-fa7a-42d6-85ff-a04a7557acf2.png)
 
 #Getting started
