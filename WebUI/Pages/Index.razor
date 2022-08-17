@@ -1,0 +1,78 @@
+﻿@page "/"
+@using QCSystemLib
+@using QCRuntime
+@inject ILogger<Index> logger
+@inject ILogger<Runtime> runtime_logger
+@inject ILogger<QcSystem> qcSystem_logger
+
+<PageTitle>Index</PageTitle>
+
+<h1>Quantum Jobs </h1>
+
+Please submit your Quantum computing job inputs below.
+
+<div class="col-md-6 col-lg-4 p-3"  style="width: 90%; ">
+    <RadzenCard>
+        <h5 class="mb-5" style="margin-bottom: 5px!important">Qubit Input</h5>
+        <table   style="width: 100%; "><tr>
+                <td> <RadzenTextBox Name="job_input" @bind-Value=@jobInput Class="w-100" ></RadzenTextBox></td>
+                <td style="padding-left: 25px;">
+                    <div>
+                        <RadzenButton  ButtonStyle="ButtonStyle.Secondary"  style="width: 180px;" Icon="add_circle_outline" BusyText="Submitting ..." IsBusy="@_isSubmitting" Click=@(async e => await OnSubmit( jobInput, "Job")) Text="Submit"/>
+                    </div>
+                </td>
+            </tr>
+            <tr></tr>
+            <tr><td style="font-size: 12px; padding-left: 5px;;">Example value X(0), Y(90), Z(180)</td></tr>
+            </table>
+        
+    </RadzenCard>
+</div>
+
+<div class="col-md-6 col-lg-4 p-3"  style="width: 90%; ">
+    <EventConsole @ref=@console Class="mt-4" /></div>
+
+@code {
+    string jobInput="X(90), Y(180), Z(90)";
+    int _counter = 0;
+    bool _isSubmitting = false;
+
+    EventConsole console;
+
+    async Task OnSubmit(string value, string name)
+    {
+        //Show spinner when the job submission is in progress
+        _isSubmitting = true;
+        _counter++;
+        var resultStatus = "Success!!!";
+        
+        console.Log($" ");
+        console.Log($" User submitted {name}:{_counter}  with Qubit input : {value}");
+        logger.LogInformation("Job input received {DT}, submitting to QC Library for execution in runtime",
+        DateTime.UtcNow.ToLongTimeString());
+        
+        //Invoke Job submission in QC system library
+        // And execute job in the runtime 
+        IRuntime runtime = new Runtime(runtime_logger);
+        IQcSystem qcSytem = new QcSystem(runtime, qcSystem_logger);
+        
+        //Adding dummy delay to show job submission and execution logs
+        await Task.Delay(1000);
+
+        //Submit the Qubit
+        var result = qcSytem.SubmitQcJob(value);
+
+        
+        //Adding dummy delay to show the job submission spinner is displayed
+        await Task.Delay(1000);
+        if (result != 0)
+            resultStatus = "Error:" + result;
+
+        //Log information in UI and logger
+        console.Log($" User submitted {name}:{_counter}  completed with result : {resultStatus}");
+        logger.LogInformation($"Job execution completed , runtime returned result {result}");
+
+
+        _isSubmitting = false;
+    }
+}
