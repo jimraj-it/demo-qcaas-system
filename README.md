@@ -3,7 +3,7 @@
 A system to allow client to submit a string commands for a single qubit, system will submit the valid commands in Quantum runtime and return results. Implemented using .Net 6.0 for rapid developement, saved as solution file to allow compile/run in visual studio.
 
 Sample screenshot:
-![image](https://user-images.githubusercontent.com/109734217/185224490-fd2702b7-fa7a-42d6-85ff-a04a7557acf2.png)
+![image](https://user-images.githubusercontent.com/109734217/185272920-d92a6b85-defd-4d05-b32f-88099423576a.png)
 
 #Getting started
 
@@ -34,6 +34,10 @@ Sample screenshot:
 - To run tests, go to test explorer tab and click first menu button "Run all"
 - Individual tests results or errors can be viewed in summary tab in left side
 ![image](https://user-images.githubusercontent.com/109734217/185259233-0e2b3610-5120-4ffe-9d1f-1bd8a2307a1c.png)
+
+# Phase 1 : 
+**Branch main**
+![image](https://user-images.githubusercontent.com/109734217/185224490-fd2702b7-fa7a-42d6-85ff-a04a7557acf2.png)
 
 # Phase 2 Updates: 
 **Branch feature/phase2**
