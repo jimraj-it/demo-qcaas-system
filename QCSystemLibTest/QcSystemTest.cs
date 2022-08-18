@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using QCRuntime;
+using QCSimulator;
 using QCSystemLib;
 using Xunit.Abstractions;
 
@@ -18,7 +19,7 @@ namespace QCSystemLibTest
             //Arrange
             var mock = new Mock<IRuntime>();
             mock.Setup(r => r.Execute("X(90), Y(180), Z(90)")).Returns(0);
-            IQcSystem qSystem = new QcSystem(mock.Object, getTestLogger());
+            IQcSystem qSystem = new QcSystem(mock.Object, getTestLogger<QcSystem>());
 
             // Act
             var result = qSystem.SubmitQcJob("X(90), Y(180), Z(90)");
@@ -34,7 +35,7 @@ namespace QCSystemLibTest
             //Arrange
             var mock = new Mock<IRuntime>();
             mock.Setup(r => r.Execute("X(90), Y(180), Z(90)")).Returns(0);
-            IQcSystem qSystem = new QcSystem(mock.Object, getTestLogger());
+            IQcSystem qSystem = new QcSystem(mock.Object, getTestLogger<QcSystem>());
 
             // Act
             var result = qSystem.SubmitQcJob("InvalidCommand");
@@ -44,14 +45,62 @@ namespace QCSystemLibTest
 
         }
 
-        private ILogger<QcSystem> getTestLogger()
+
+        [Fact]
+        public void Given_QCSystem_Simulator_ExecuteJobs_Returns_Result()
+        {
+            //Arrange
+            var mock = new Simulator(getTestLogger<Simulator>());
+            IQcSystem qSystem = new QcSystem(mock, getTestLogger<QcSystem>());
+
+            // Act
+            var result = qSystem.SubmitQcJob("X(90), Y(180), Z(90)");
+
+            // Assert
+            Assert.True(result is >= 0 and <= 100);
+
+        }
+
+        [Fact]
+        public void Given_QCSystem_Simulator_ExecuteJobs_Returns_Error()
+        {
+            //Arrange
+
+            var mock = new Simulator(getTestLogger<Simulator>());
+            IQcSystem qSystem = new QcSystem(mock, getTestLogger<QcSystem>());
+
+            // Act
+            var result = qSystem.SubmitQcJob("InvalidCommand");
+
+            // Assert
+            Assert.Equal(111, result);
+
+        }
+
+        [Fact]
+        public void Given_QCSystem_EchoRuntime_ExecuteJobs_Returns_Result()
+        {
+            //Arrange
+            var echo = new EchoRuntime(getTestLogger<EchoRuntime>());
+            IQcSystem qSystem = new QcSystem(echo, getTestLogger<QcSystem>());
+
+            // Act
+            var result = qSystem.SubmitQcJob("X(90), Y(180), Z(90)");
+
+
+            // Assert
+            Assert.Equal(0, result);
+
+        }
+
+        private ILogger<T> getTestLogger<T>()
         {
             //using var logFactory = LoggerFactory.Create(builder => builder.AddFilter("Microsoft", LogLevel.Warning));
             var serviceProvider = new ServiceCollection()
                 .AddLogging()
                 .BuildServiceProvider();
             var logFactory = serviceProvider.GetService<ILoggerFactory>();
-            return logFactory.CreateLogger<QcSystem>();
+            return logFactory.CreateLogger<T>();
         }
     }
 }

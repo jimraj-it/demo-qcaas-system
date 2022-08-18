@@ -22,7 +22,7 @@ namespace QCSystemLib
             if (ValidateJob(job))
             {
                 var result= _runtime.Execute(job);
-                _logger.LogInformation($" Executed Runtime for job: {job} returned result {result}");
+                _logger.LogInformation($" Executed  job: {job} returned result {result}");
 
                 return result;
             }
@@ -40,11 +40,17 @@ namespace QCSystemLib
             if (string.IsNullOrEmpty(job) || !job.Contains(",")) return false;
 
             var axisInfo = job.Split(",").ToList();
+            //Return false if three parts are not present
             if (axisInfo.Count != 3) return false;
 
-            var xAngle=axisInfo[0].Substring(2, axisInfo[0].Length-3);
-            var yAngle = axisInfo[1].Trim().Substring(2, axisInfo[1].Length - 4);
-            var zAngle = axisInfo[2].Trim().Substring(2, axisInfo[2].Length - 4);
+            var xValue = axisInfo[0].Trim().ToUpper();
+            var yValue = axisInfo[1].Trim().ToUpper();
+            var zValue = axisInfo[2].Trim().ToUpper();
+
+            //Extract values of Angle for X,Y and Z
+            var xAngle= xValue.Substring(xValue.IndexOf("X")+2, xValue.Length-3);
+            var yAngle = yValue.Substring(yValue.IndexOf("Y") +2, yValue.Length - 3);
+            var zAngle = zValue.Substring(zValue.IndexOf("Z") + 2, zValue.Length - 3);
 
             if (int.TryParse(xAngle, out var intXAngle) 
                 && int.TryParse(yAngle, out var intYAngle) 
