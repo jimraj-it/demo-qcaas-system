@@ -48,3 +48,19 @@ Three different modes for execution of jobs impleneted, user is allowed to selec
 - UI results and Console logs to reflect the different modes selected
 ![image](https://user-images.githubusercontent.com/109734217/185272920-d92a6b85-defd-4d05-b32f-88099423576a.png)
 
+
+# Phase 3 Updates: 
+**Branch feature/phase3:**
+
+Asynchrnous job submission and result check is implemented to over point 3 from test. also features from point 5 of test is implemented as user will be able to see historical job details by GetStatus search using jobID and view details.
+
+- User can submit job and Job Id will be displayed in UI for reference
+- Aync job will run in the backgorund and user can use UI check feature
+- User can enter job Id in the text box and search for it.
+- When no match found it will reply Not found in Run time message
+- When Job is present in the Runtime history it will return status
+- If the job is in progressi it will display corresponding message
+- If completed it will print the full detaisl of job with time taken to complete.
+- Note: Database implmentation not included, historical data is kept in app for demo purpose.
+![image](https://user-images.githubusercontent.com/109734217/185417150-b8bd25f0-f1c5-4871-a195-ecf45c395bb9.png)
+
