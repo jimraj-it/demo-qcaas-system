@@ -35,3 +35,11 @@ Sample screenshot:
 - Individual tests results or errors can be viewed in summary tab in left side
 ![image](https://user-images.githubusercontent.com/109734217/185259233-0e2b3610-5120-4ffe-9d1f-1bd8a2307a1c.png)
 
+# Phase 2 Updates: 
+** Branch feature/phase2**
+Three different modes for execution of jobs impleneted, user is allowed to select one of the mode and exeucte his job in it.
+- User can select from dropdown and execute the jobs
+- Jobs validation logic improved and tested
+- UI results and Console logs to reflect the different modes selected
+![image](https://user-images.githubusercontent.com/109734217/185272920-d92a6b85-defd-4d05-b32f-88099423576a.png)
+
