@@ -20,6 +20,31 @@ namespace QCSimulator
             return result % 2 == 0 ? 0 : result;
         }
 
+        public void ExecuteAsync(string job, int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckJobComplete(int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckJobPresent(int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetJobStatus(int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JobResult? GetJobResult(int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
         private static int GetRandomNumber()
         {
             //Dummy implementation to return 0 most of the time, else integer number as error code

@@ -64,9 +64,40 @@ namespace QCSystemLib
             return false;
         }
 
-        public int SubmitQcJobAsync(string job)
+        public int SubmitQcJobAsync(string job , int jobId)
         {
-            throw new NotImplementedException();
+            if (ValidateJob(job))
+            {
+                _runtime.ExecuteAsync(job, jobId); 
+                _logger.LogInformation($" Submitted Async job: {job} returning in proess result -1");
+
+                return -1;
+            }
+            else
+            {
+                _logger.LogInformation($"Job {job} submitted not viable, please retry with different job input");
+                return RuntimeErrors.INVALID_JOB_STRING;
+            }
+        }
+
+        public bool CheckJobComplete(int jobId)
+        {
+            return _runtime.CheckJobComplete(jobId);
+        }
+
+        public bool CheckJobPresent(int jobId)
+        {
+
+            return _runtime.CheckJobPresent(jobId);
+        }
+
+        public int GetJobStatus(int jobId)
+        {
+            return _runtime.GetJobStatus(jobId);
+        }
+        public JobResult? GetJobResult(int jobId)
+        {
+            return _runtime.GetJobResult(jobId);
         }
 
         public int ReadAsyncQcJobStatus(int jobId)

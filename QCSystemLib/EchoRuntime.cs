@@ -23,5 +23,31 @@ namespace QCSystemLib
              _logger.LogInformation($"EchoRuntime returning fake result: 0");
             return 0;
         }
+
+
+        public void ExecuteAsync(string job, int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckJobComplete(int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CheckJobPresent(int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetJobStatus(int jobId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public JobResult? GetJobResult(int jobId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

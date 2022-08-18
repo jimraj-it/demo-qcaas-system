@@ -1,0 +1,164 @@
+﻿@page "/asyncjobs"
+@using QCSystemLib
+@using QCRuntime
+@using QCSimulator
+@using System.Runtime.InteropServices.ComTypes
+@using System.Reflection.Metadata.Ecma335
+@inject ILogger<AsyncJobs> logger
+@inject ILogger<Runtime> runtime_logger
+@inject ILogger<Simulator> simulator_logger
+@inject ILogger<EchoRuntime> echo_logger
+@inject ILogger<QcSystem> qcSystem_logger
+
+<PageTitle>Async Jobs</PageTitle>
+
+<h1>Async Jobs </h1>
+
+Please submit your job inputs & select QC Modes below.
+
+<div class="col-md-6 col-lg-4 p-3"  style="width: 90%; ">
+    <RadzenCard>
+        <h5 class="mb-5" style="margin-bottom: 5px!important">Qubit Input</h5>
+        <table   style="width: 100%; "><tr>
+                <td> <RadzenTextBox Name="job_input" @bind-Value=@jobInput Class="w-100" ></RadzenTextBox></td>
+                <td style="padding-top: 10px; padding-left: 25px; width :200px"><RadzenDropDown   Data=@_dropDownList @bind-Value=@_selectedMode
+                   Class="w-100" /></td>
+                <td style="padding-left: 25px;">
+                    <div>
+                        <RadzenButton  ButtonStyle="ButtonStyle.Secondary"  style="width: 180px;" Icon="add_circle_outline" BusyText="Submitting ..." IsBusy="@_isSubmitting" Click=@(async e => await OnSubmit( jobInput, "Job")) Text="Submit"/>
+                    </div>
+                </td>
+            </tr>
+            <tr></tr>
+            <tr><td style="font-size: 12px; padding-left: 5px;;">Example value X(0), Y(90), Z(180)</td></tr>
+            </table>
+        
+    </RadzenCard>
+</div>
+<div class="col-md-6 col-lg-4 p-3"  style="width: 90%; ">
+    <RadzenCard>Job Status Check
+        <table   style="width: 100%; "><tr>
+                <td> <RadzenTextBox Name="job_id" @bind-Value=@jobcheckId Class="w-100" ></RadzenTextBox></td>
+               <td style="padding-left: 25px;">
+                    <div>
+                        <RadzenButton  ButtonStyle="ButtonStyle.Light"  style="width: 180px;" Icon="search" BusyText="Checking ..." IsBusy="@_isSubmitting" Click=@(async e => await OnCheck( int.Parse(jobcheckId))) Text="Get Status"/>
+                    </div>
+                </td>
+            </tr>
+            <tr></tr>
+            <tr><td style="font-size: 12px; padding-left: 5px;;">Example value 1,2,3</td></tr>
+        </table>
+        
+    </RadzenCard>
+</div>
+<div class="col-md-6 col-lg-4 p-3"  style="width: 90%; ">
+    <EventConsole @ref=@console Class="mt-4" /></div>
+
+@code {
+    string jobInput="X(90), Y(180), Z(90)";
+    string jobcheckId = "1";
+    int _counter = 0;
+    bool _isSubmitting = false;
+    EventConsole console;
+
+    readonly List<string> _dropDownList= new ()
+    {
+        "Runtime"
+    };
+
+
+    string _selectedMode="Runtime";
+
+    async Task OnCheck(int jobId)
+    {
+
+        _isSubmitting = true;
+        var  resultStatus = "Success!!!!";
+
+        console.Log($" ");
+        //User selected runtime is used for checking
+        IQcSystem qcSytem = getSelectedRT();
+        if (!qcSytem.CheckJobPresent(jobId))
+        {
+            console.Log($" User submitted JobId: {jobId} : Not found in runtime");
+
+        } else if (qcSytem.CheckJobComplete(jobId))
+        {
+            console.Log($" User submitted JobId: {jobId} : Completed!");
+            var resultInfo = qcSytem.GetJobResult(jobId);
+            if (resultInfo != null)
+            {
+                console.Log($" JobId: {jobId} : Details {resultInfo.ToString()}");
+                logger.LogInformation($" JobId: {jobId} : Details {resultInfo.ToString()}");
+                if (resultInfo.Result != 0)
+                    resultStatus = "Error:" + resultInfo.Result;
+               
+            }
+
+            console.Log($" JobId: {jobId} : completed in {_selectedMode} with result : {resultStatus}");
+        }
+        else
+        {
+            console.Log($" User submitted JobId: {jobId} : In progress");
+            logger.LogInformation($" JobId: {jobId} :In progress");
+        }
+        
+        _isSubmitting = false;
+    }
+
+    async Task OnSubmit(string value, string name)
+    {
+        //Show spinner when the job submission is in progress
+        _isSubmitting = true;
+        _counter++;
+        var resultStatus = "Success!!!";
+        
+        console.Log($" ");
+        console.Log($" User submitted JobId: {_counter} : with Qubit input : {value}");
+        logger.LogInformation("Job input received {DT}, submitting to QC Library for execution in runtime",
+        DateTime.UtcNow.ToLongTimeString());
+        
+        //Invoke Job submission in QC system library
+       
+            
+        //User selected runtime is used for execution
+        IQcSystem qcSytem = getSelectedRT();
+        
+    //Adding dummy delay to show job submission and execution logs
+            await Task.Delay(1000);
+
+    //Submit the Qubit
+            var result = qcSytem.SubmitQcJobAsync(value,  _counter);
+
+        
+    //Adding dummy delay to show the job submission spinner is displayed
+            await Task.Delay(1000);
+            if (result != 0)
+                resultStatus = "Error:" + result;
+
+    //Log information in UI and logger
+            console.Log($" JobId: {_counter} : Submitted successfully");
+            logger.LogInformation($"Job Submission completed , with JobId : {_counter}");
+        
+
+
+        _isSubmitting = false;
+    }
+
+    private IQcSystem getSelectedRT()
+    {
+    // And execute job in the runtime 
+        IRuntime selRuntime;
+
+    //Simple comparison to generate runtime based on user selection
+        if(_selectedMode.Equals("Runtime"))
+            selRuntime= new Runtime(runtime_logger);
+        else if (_selectedMode.Equals("Simulator"))
+            selRuntime = new Simulator(simulator_logger);
+        else 
+            selRuntime = new EchoRuntime(echo_logger);
+
+        return new QcSystem(selRuntime, qcSystem_logger);
+    }
+
+}
